@@ -90,7 +90,7 @@ def _badge(text: str, color: str) -> str:
 
 
 def render():
-    st.title("📊 앱 인사이트 대시보드")
+    st.title("Dashboard")
 
     # 수집 버튼
     col_title, col_btn = st.columns([8, 2])
@@ -120,41 +120,98 @@ def render():
 
     fw_filter = st.session_state.fw_filter
 
-    # 검색 + 정렬
-    col2, col3 = st.columns([6, 4])
-    with col2:
+    # 검색 + 정렬 + 범위 토글
+    col_search, col_sort, col_range = st.columns([5, 3, 2])
+    with col_search:
         search = st.text_input("검색", placeholder="🔍 키워드 검색", label_visibility="collapsed")
-    with col3:
+    with col_sort:
         sort_by = st.radio("정렬", ["최신순", "오래된순"], horizontal=True, label_visibility="collapsed")
+    with col_range:
+        show_all = st.toggle("전체 보기", value=False)
 
     # 프레임워크 읽기 가이드
     if fw_filter != "전체" and fw_filter in FRAMEWORK_GUIDE:
         _render_framework_guide(fw_filter)
 
     # 데이터 조회
-    conn   = get_conn()
-    query  = "SELECT * FROM apps"
-    params = []
-    where  = []
+    from datetime import date
+    today = str(date.today())
+    PAGE_SIZE = 30
+
+    # 필터 조건 구성
+    where, params = [], []
+    if not show_all:
+        where.append("DATE(collected_at) = ?")
+        params.append(today)
     if fw_filter != "전체":
         where.append("framework = ?")
         params.append(fw_filter)
     if search:
         where.append("(name LIKE ? OR description LIKE ?)")
         params += [f"%{search}%", f"%{search}%"]
-    if where:
-        query += " WHERE " + " AND ".join(where)
-    query += " ORDER BY collected_at " + ("DESC" if sort_by == "최신순" else "ASC")
-    query += " LIMIT 60"
 
-    apps = [dict(r) for r in conn.execute(query, params).fetchall()]
-    conn.close()
+    where_clause = (" WHERE " + " AND ".join(where)) if where else ""
+    order_clause = " ORDER BY collected_at " + ("DESC" if sort_by == "최신순" else "ASC")
 
-    if not apps:
-        st.info("수집된 앱이 없습니다. '수집하기' 버튼을 눌러 데이터를 가져오세요.")
+    conn = get_conn()
+
+    # 전체 개수 (페이지 계산용)
+    total = conn.execute(
+        f"SELECT COUNT(*) FROM apps{where_clause}", params
+    ).fetchone()[0]
+
+    if total == 0:
+        conn.close()
+        if not show_all:
+            st.info("오늘 수집된 항목이 없습니다. '수집하기' 버튼을 눌러 데이터를 가져오세요.")
+        else:
+            st.info("수집된 앱이 없습니다. '수집하기' 버튼을 눌러 데이터를 가져오세요.")
         return
 
-    st.caption(f"총 {len(apps)}개")
+    total_pages = max(1, (total + PAGE_SIZE - 1) // PAGE_SIZE)
+
+    # 페이지 상태
+    state_key = f"page_{fw_filter}_{show_all}_{sort_by}"
+    if state_key not in st.session_state:
+        st.session_state[state_key] = 1
+    # 필터 변경 시 1페이지로 리셋
+    prev_key = "prev_filter_state"
+    cur_state = (fw_filter, show_all, sort_by, search)
+    if st.session_state.get(prev_key) != cur_state:
+        st.session_state[state_key] = 1
+        st.session_state[prev_key] = cur_state
+    page = st.session_state[state_key]
+
+    # 현재 페이지 데이터
+    offset = (page - 1) * PAGE_SIZE
+    apps = [dict(r) for r in conn.execute(
+        f"SELECT * FROM apps{where_clause}{order_clause} LIMIT ? OFFSET ?",
+        params + [PAGE_SIZE, offset]
+    ).fetchall()]
+    conn.close()
+
+    # 헤더: 개수 + 페이지네이션
+    range_label = "전체 누적" if show_all else "오늘 수집분"
+    h_left, h_mid, h_right = st.columns([3, 4, 3])
+    with h_left:
+        st.caption(f"{range_label} · {total}개")
+    with h_mid:
+        if total_pages > 1:
+            p1, p2, p3 = st.columns([1, 2, 1])
+            with p1:
+                if st.button("◀", disabled=page == 1, use_container_width=True, key="pg_prev"):
+                    st.session_state[state_key] = page - 1
+                    st.rerun()
+            with p2:
+                st.markdown(
+                    f"<div style='text-align:center;padding:6px 0;color:#888;font-size:13px'>"
+                    f"{page} / {total_pages}</div>",
+                    unsafe_allow_html=True,
+                )
+            with p3:
+                if st.button("▶", disabled=page == total_pages, use_container_width=True, key="pg_next"):
+                    st.session_state[state_key] = page + 1
+                    st.rerun()
 
     cols = st.columns(3)
     for i, app in enumerate(apps):

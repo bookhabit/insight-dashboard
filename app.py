@@ -2,7 +2,7 @@ import streamlit as st
 from db.schema import init_db
 
 st.set_page_config(
-    page_title="기획 인사이트 대시보드",
+    page_title="대시보드",
     page_icon="💡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -16,7 +16,7 @@ if "current_page" not in st.session_state:
     st.session_state.current_page = "📊 대시보드"
 
 with st.sidebar:
-    st.markdown("## 💡 기획 인사이트")
+    st.markdown("## 크롤링")
     st.divider()
 
     selected = st.radio(

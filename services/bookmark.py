@@ -44,7 +44,7 @@ def is_bookmarked(app_id: int) -> bool:
 def get_all_bookmarks() -> list[dict]:
     conn = get_conn()
     rows = conn.execute("""
-        SELECT b.id, b.memo, b.tags, b.saved_at,
+        SELECT b.id, b.app_id, b.memo, b.tags, b.saved_at,
                a.name, a.description, a.source, a.framework, a.url, a.category
         FROM bookmarks b
         JOIN apps a ON b.app_id = a.id

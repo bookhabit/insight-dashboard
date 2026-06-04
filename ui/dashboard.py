@@ -20,7 +20,7 @@ def _badge(text: str, color: str) -> str:
 
 
 def render():
-    st.title("📊 앱 인사이트 대시보드")
+    st.title("📊 Dashboard")
 
     # 수집 버튼
     col_title, col_btn = st.columns([8, 2])

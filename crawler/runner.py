@@ -11,9 +11,7 @@ _CRAWLERS: list[tuple[str, Callable]] = [
     ("Indie Hackers",           "crawler.subjects.indiehackers",            "fetch"),
     # 시장쪼개기
     ("App Store Categories",    "crawler.markets.appstore_categories",      "fetch"),
-    ("Reddit Niche",            "crawler.markets.reddit_niche",             "fetch"),
     # 소머즈의 귀
-    ("Reddit Social",           "crawler.listening.reddit_social",          "fetch"),
     ("Naver DataLab",           "crawler.listening.naver_datalab",          "fetch"),
     ("Google Trends",           "crawler.listening.google_trends",          "fetch"),
     ("News RSS",                "crawler.listening.news_rss",               "fetch"),
@@ -21,7 +19,6 @@ _CRAWLERS: list[tuple[str, Callable]] = [
     ("App Store Reviews",       "crawler.differences.appstore_reviews",     "fetch"),
     ("Google Play Reviews",     "crawler.differences.googleplay_reviews",   "fetch"),
     ("Product Hunt Comments",   "crawler.differences.producthunt_comments", "fetch"),
-    ("Reddit Wishlist",         "crawler.differences.reddit_wishlist",      "fetch"),
 ]
 
 

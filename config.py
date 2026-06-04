@@ -34,7 +34,8 @@ GOOGLE_PLAY_APP_IDS = [
 NEWS_FEEDS = [
     {"name": "요즘IT",       "url": "https://yozm.wishket.com/magazine/rss/",      "framework": "소머즈"},
     {"name": "Platum",       "url": "https://platum.kr/feed",                      "framework": "소머즈"},
-    {"name": "TechCrunch",   "url": "https://techcrunch.com/feed/",                "framework": "소머즈"},
+    {"name": "TechCrunch Apps",     "url": "https://techcrunch.com/category/apps/feed/",     "framework": "소머즈"},
+    {"name": "TechCrunch Security", "url": "https://techcrunch.com/category/security/feed/", "framework": "소머즈"},
     {"name": "The Verge",    "url": "https://www.theverge.com/rss/index.xml",      "framework": "소머즈"},
     {"name": "Fast Company", "url": "https://www.fastcompany.com/latest/rss",      "framework": "소머즈"},
 ]

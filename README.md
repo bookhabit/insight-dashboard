@@ -69,8 +69,8 @@ streamlit run app.py
 2. 프레임워크 필터로 원하는 카테고리만 보기
    - `주체찾기` — Product Hunt, HN, App Store 랭킹
    - `시장쪼개기` — 카테고리별/국가별 앱 비교
-   - `소머즈` — Reddit, 네이버 트렌드, 뉴스 RSS
-   - `한끗차이` — 앱 1~2점 리뷰, 불만 수요
+   - `소머즈` — 네이버 트렌드, Google Trends, 뉴스 RSS
+   - `한끗차이` — 앱 1~2점 리뷰
 3. 마음에 드는 앱 **`🔖 북마크`** 저장
 
 ### 📅 캘린더 메모
@@ -116,14 +116,14 @@ streamlit run app.py
 
 ---
 
-## 수집 소스 (14개)
+## 수집 소스 (10개)
 
 | 프레임워크 | 소스 |
 |-----------|------|
 | 주체찾기 | Product Hunt · Hacker News Show HN · App Store KR/US/JP · Indie Hackers |
-| 시장쪼개기 | App Store 카테고리별×국가별 · Reddit 니치 커뮤니티 |
-| 소머즈 | Reddit 소셜 · Naver DataLab · Google Trends · 뉴스 RSS 5개 |
-| 한끗차이 | App Store 저평점 리뷰 · Google Play 저평점 리뷰 · PH 댓글 · Reddit 수요 검색 |
+| 시장쪼개기 | App Store 카테고리별×국가별 |
+| 소머즈 | Naver DataLab · Google Trends · 요즘IT · Platum · TechCrunch Apps · TechCrunch Security · The Verge · Fast Company |
+| 한끗차이 | App Store 저평점 리뷰 · Google Play 저평점 리뷰 · PH 댓글 |
 
 ---
 

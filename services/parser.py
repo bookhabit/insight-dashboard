@@ -1,5 +1,14 @@
+import html as _html
 import json
+import re
 from db.schema import get_conn
+
+
+def _strip_html(text: str) -> str:
+    s = _html.unescape(text or "")
+    s = re.sub(r"<!--.*?-->", " ", s, flags=re.DOTALL)
+    s = re.sub(r"<[^>]*>?", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
 
 
 def save_items(items: list[dict]) -> int:
@@ -16,8 +25,8 @@ def save_items(items: list[dict]) -> int:
             """INSERT INTO apps (name, description, category, source, framework, url, extra)
                VALUES (?, ?, ?, ?, ?, ?, ?)""",
             (
-                (item.get("name")        or "")[:200],
-                (item.get("description") or "")[:500],
+                _strip_html(item.get("name")        or "")[:200],
+                _strip_html(item.get("description") or "")[:500],
                 (item.get("category")    or ""),
                 (item.get("source")      or ""),
                 (item.get("framework")   or ""),

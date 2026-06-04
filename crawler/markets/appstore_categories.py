@@ -11,9 +11,9 @@ def fetch() -> list[dict]:
         for cat_id, cat_name in APPSTORE_CATEGORIES.items():
             url = (
                 f"https://rss.applemarketingtools.com/api/v2/{country}"
-                f"/apps/top-free/50/{cat_id}/apps.json"
+                f"/apps/top-free/50/apps.json"
             )
-            res = base_fetch(url)
+            res = base_fetch(url, params={"genre": cat_id})
             if not res:
                 continue
             for entry in res.json().get("feed", {}).get("results", []):
